@@ -3,7 +3,7 @@ import path from "path";
 
 const knexConfig =  {
 
-  development: { 
+  development: {    
     client: "pg",
     connection: "postgres://localhost/authentication",
     migrations: {
