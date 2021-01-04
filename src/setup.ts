@@ -19,12 +19,14 @@ export const init = async () => {
   // app.use('/a/v', express.static(config.file.videoDir));
   // app.use(routes);
 
+  import("./db/db");
+
   // logger.info("Initilizing Apollo Server...");
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: RootResolver,
-      validate: true,
-      authChecker: customAuthChecker
+      validate: false,
+      authChecker: customAuthChecker,
     }),
     debug: true,
     formatError: (err: GraphQLError) => {
@@ -32,9 +34,9 @@ export const init = async () => {
       // if(err.message.startsWith(config.error.dbLogPrefix) && config.env !== "dev") {
       //   return new Error("Internal server error");
       // }
-      if(process.env.ENV !== "dev") {
-        return new Error("Internal server error");
-      }
+      // if(process.env.ENV !== "dev") {
+      //   return new Error("Internal server error");
+      // }
       return err;
     },
     context: ({ req, res }) => ({ req, res }),

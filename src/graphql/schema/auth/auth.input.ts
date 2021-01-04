@@ -30,21 +30,6 @@ export class RegisterInput {
 
   @Field(() => String) 
   password: string;
-
-  @Field(() => String) 
-  firstname: string;
-
-  @Field(() => String, {nullable: true}) 
-  middlename: string;
-
-  @Field(() => String) 
-  lastname: string;
-
-  @Field(() => String) 
-  dob: string;
-
-  @Field(() => String) 
-  country: string;
 };
 
 @ArgsType()

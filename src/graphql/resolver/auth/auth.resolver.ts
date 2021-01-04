@@ -6,8 +6,7 @@ import { Context } from "../../../types/auth";
 import * as controllers from "../../../controllers";
 
 // @types
-// import { RegisterInput, ResponseToken, ChangePasswordInput } from "../../schema";
-import { Auth, ResponseToken } from "../../schema";
+import { RegisterInput, ChangePasswordInput, ResponseToken } from "../../schema";
 
 @Resolver()
 export class AuthResolver {
@@ -20,35 +19,23 @@ export class AuthResolver {
     return res;
   }
 
-//   @Mutation(() => ResponseToken)
-//   async RegisterWithUsernameAndPassword(@Args() {
-//     username,
-//     firstname,
-//     middlename,
-//     lastname,
-//     password,
-//     country,
-//     dob
-//   }: RegisterInput): Promise<ResponseToken> {
-//     const res = controllers.auth.RegisterWithUsernameAndPassword({
-//       username, 
-//       password, 
-//       firstname, 
-//       middlename, 
-//       lastname, 
-//       dob, 
-//       country
-//     });
-//     return res;
-//   }
+  @Mutation(() => ResponseToken)
+  async RegisterWithUsernameAndPassword(@Args(() => RegisterInput) {
+    username,
+    password
+  }: RegisterInput): Promise<ResponseToken> {
+    console.log(username, password);
+    const res = controllers.auth.RegisterWithUsernameAndPassword({username, password});
+    return res;
+  }
 
-//   @Authorized()
-//   @Mutation(() => Boolean)
-//   async ChangePassword(
-//     @Args() {newPassword, oldPassword}: ChangePasswordInput,
-//     @Ctx() {req} : Context
-//   ): Promise<boolean> {
-//     await controllers.auth.changePassword(req.auth!, oldPassword, newPassword)
-//     return true;
-//   }
+  @Authorized()
+  @Mutation(() => Boolean)
+  async ChangePassword(
+    @Args(() => ChangePasswordInput) {newPassword, oldPassword}: ChangePasswordInput,
+    @Ctx() {req} : Context
+  ): Promise<boolean> {
+    await controllers.auth.changePassword(req.auth!, oldPassword, newPassword)
+    return true;
+  }
 }
