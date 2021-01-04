@@ -2,7 +2,7 @@ import { AuthChecker } from "type-graphql";
 import { Response, NextFunction} from "express";
 import jwt from "jsonwebtoken";
 
-import { Context, CustomRequest, TokenPayload } from "../types/auth";
+import { Context, CustomRequest, TokenPayload } from "../types";
 
 import * as services from "../services";
 import { Auth } from "../graphql/schema";
@@ -24,7 +24,7 @@ export const isAuth = async (Authorization: string | undefined): Promise<Auth> =
       throw new Error("not authorized");
     };
     
-    const {uid, username} = payload;
+    const {username} = payload;
     // get current user info
     const auth = await services.auth.findUserWithUsername(username);
 

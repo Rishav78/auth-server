@@ -77,24 +77,3 @@ export const findUserWithUID = async (uid: string): Promise<Auth> => {
     // throw handleDBError(err);
   }
 }
-
-export const findUserWithOwnerID = async (owner_id: string): Promise<Auth> => {
-  try {
-    // logger.info("findUserWithOwnerID: Fetching user information from database...");
-    const user: Auth | undefined = await AuthModel
-      .query()
-      .findOne({owner_id, is_active: true})
-      .modify("defaultExport") as any;
-    
-    const error = validateFetchUser(user);
-    if(error) {
-      throw new Error(error);
-    }
-
-    return user!;
-  }
-  catch (err) {
-    throw err;
-    // throw handleDBError(err);
-  }
-}
