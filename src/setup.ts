@@ -1,8 +1,17 @@
+import "reflect-metadata";
 import express from "express";
-const app = express();
 
-app.get("/", (req, res) => {
-  res.send("hello world!");
-})
+const port = process.env.PORT || 4000;
 
-app.listen(3000, () => console.log("running"));
+export const init = async () => {
+  const app = express();
+   
+  app.get("/", (req, res, next) => {
+    return res.status(200).send("Hello World!");
+  });
+
+  app.listen(port, () => {
+    console.log(`🚀 Server ready at http://localhost:${port}`);
+    //console.log(`Access graphql API at http://localhost:${port}/graphql`);
+  }) 
+}

@@ -1,11 +1,16 @@
 // Update with your config settings.
+import path from "path";
 
-module.exports = {
+const knexConfig =  {
 
-  development: {
-    client: "sqlite3",
-    connection: {
-      filename: "./dev.sqlite3"
+  development: { 
+    client: "pg",
+    connection: "postgres://localhost/authentication",
+    migrations: {
+      directory: path.resolve(__dirname, "db", "migrations")
+    },
+    seeds: {
+      directory: path.resolve(__dirname, "db", "seeds")
     }
   },
 
@@ -40,5 +45,7 @@ module.exports = {
       tableName: "knex_migrations"
     }
   }
-
 };
+
+
+export default knexConfig;
