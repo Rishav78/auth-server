@@ -29,20 +29,12 @@ class Auth extends Model implements AuthDatabaseSchema {
         "is_active AS active",
         "is_deleted AS isDeleted",
         "created_at AS createdAt", 
-        "updated_at AS updatedAt", 
-        "owner_id AS ownerId"
+        "updated_at AS updatedAt"
       );
     },
     authExport(builder: objection.QueryBuilder<Auth>) {
       builder.select(
-        "uid", 
-        "password",
-        "username", 
-        "is_active AS active",
-        "is_deleted AS isDeleted",
-        "created_at AS createdAt", 
-        "updated_at AS updatedAt", 
-        "owner_id AS ownerId"
+        "password"
       );
     }
   };

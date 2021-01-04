@@ -17,8 +17,8 @@ export const authenticateUserWithUsernameAndPassword = async (username: string, 
     const user: Auth | undefined = await AuthModel
       .query()
       .findOne({username})
-      .modify("authExport")
-      .withGraphFetched("user") as any;
+      .modify("defaultExport")
+      .modify("authExport") as any;
 
     const error = validateFetchUser(user);
     if(error) {
@@ -42,8 +42,7 @@ export const findUserWithUsername = async (username: string): Promise<Auth> => {
     const user: Auth | undefined = await AuthModel
       .query()
       .findOne({username})
-      .modify("authExport")
-      .withGraphFetched("user") as any;
+      .modify("defaultExport") as any;
 
     const error = validateFetchUser(user);
     if(error) {
@@ -64,8 +63,7 @@ export const findUserWithUID = async (uid: string): Promise<Auth> => {
     const user: Auth | undefined = await AuthModel
       .query()
       .findById(uid)
-      .modify("defaultExport")
-      .withGraphFetched("user") as any;
+      .modify("defaultExport") as any;
    
     const error = validateFetchUser(user);
     if(error) {
@@ -86,8 +84,7 @@ export const findUserWithOwnerID = async (owner_id: string): Promise<Auth> => {
     const user: Auth | undefined = await AuthModel
       .query()
       .findOne({owner_id, is_active: true})
-      .modify("defaultExport")
-      .withGraphFetched("user") as any;
+      .modify("defaultExport") as any;
     
     const error = validateFetchUser(user);
     if(error) {
