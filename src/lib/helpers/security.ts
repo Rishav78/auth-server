@@ -1,9 +1,13 @@
+import {Request} from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
-import { TokenPayload } from "../../types/auth";
+import { CustomRequest, TokenPayload } from "../../types";
 import { Auth } from "../../graphql/schema";
 
+
+import * as services from "../../services";
+ 
 export const generateToken = (payload?: TokenPayload | null, user?: Auth | null) => {
   if(!payload && !user) {
     throw new Error('payload or user information not provided');
@@ -24,5 +28,36 @@ export const generateToken = (payload?: TokenPayload | null, user?: Auth | null)
 };
 
 export const generateHash = async (text: string, round: number = 10) => {
-  return await bcrypt.hash(text, await bcrypt.genSalt(round));
+  return bcrypt.hash(text, await bcrypt.genSalt(round));
+}
+
+export const getAuthToken = (req: Request | CustomRequest): string | null => {
+  const Authorization: string | undefined = req.get("Authorization");
+  if(!Authorization) {
+    return null;
+  }
+  const [barrer, token] = Authorization.split(" ");
+  return token;
+}
+
+export const isAuth = async (token: string | null | undefined): Promise<Auth> => {
+  if(!token) {
+    throw new Error("not authorized!");
+  }
+  try {
+    const payload: TokenPayload = jwt.verify(token, "secretkey") as TokenPayload;
+
+    if(!payload) {
+      throw new Error("not authorized");
+    };
+    
+    const {username} = payload;
+    // get current user info
+    const auth = await services.auth.findUserWithUsername(username);
+
+    return auth;
+  }
+  catch (error) {
+    throw error;
+  }
 }

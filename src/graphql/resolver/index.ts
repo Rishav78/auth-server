@@ -1,6 +1,6 @@
 import {AuthResolver} from "./auth/auth.resolver";
 
-const rootResolver: any = [
+const rootResolver: readonly [Function, ...Function[]] | [Function, ...Function[]] | readonly [string, ...string[]] | [string, ...string[]] = [
   AuthResolver,
 ];
 

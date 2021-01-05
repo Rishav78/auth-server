@@ -7,6 +7,7 @@ import * as controllers from "../../../controllers";
 
 // @types
 import { RegisterInput, ChangePasswordInput, ResponseToken } from "../../schema";
+import { getAuthToken } from "../../../lib/helpers/security";
 
 @Resolver()
 export class AuthResolver {
@@ -24,8 +25,15 @@ export class AuthResolver {
     username,
     password
   }: RegisterInput): Promise<ResponseToken> {
-    console.log(username, password);
     const res = controllers.auth.RegisterWithUsernameAndPassword({username, password});
+    return res;
+  }
+
+  @Query(() => Boolean)
+  async IsAuthenticated(@Ctx() {req}: Context): Promise<boolean> {
+    const token = getAuthToken(req);
+    if(!token) return false;
+    const res = controllers.auth.isAuthenticated(token);
     return res;
   }
 

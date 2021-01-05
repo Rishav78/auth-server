@@ -46,6 +46,6 @@ export const init = async () => {
 
   app.listen(port, () => {
     console.log(`🚀 Server ready at http://localhost:${port}`);
-    console.log(`Access graphql API at hehe http://localhost:${port}/graphql`);
+    console.log(`Access graphql API at http://localhost:${port}/graphql`);
   }) 
 }

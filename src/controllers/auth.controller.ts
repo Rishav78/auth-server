@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import * as services from "../services";
 
-import { generateToken } from "../lib/helpers/security";
+import { generateToken, isAuth } from "../lib/helpers/security";
 
 // @types
 import { ResponseToken, Auth } from "../graphql/schema";
@@ -64,4 +64,14 @@ export const changePassword = async (auth: Auth, oldPassword: string, newPasswor
     }
   };
   await services.auth.updateAuthInformation(uid, updateObj);
+}
+
+export const isAuthenticated = async (token: string): Promise<boolean> => {
+  try {
+    const authenticated = await isAuth(token);
+    return authenticated ? true : false;
+  }
+  catch (err) {
+    throw err;
+  }
 }

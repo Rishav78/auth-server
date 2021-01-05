@@ -4,6 +4,10 @@ import { AuthUpdateObject } from "../../types/auth";
 import {AuthModel} from "../../db/models";
 import { generateHash } from "../../lib/helpers/security";
 
+export const updatePassword = async () => {
+  
+}
+
 export const updateAuthInformation = async (id: string, {
   isDeleted: is_deleted,
   username,
