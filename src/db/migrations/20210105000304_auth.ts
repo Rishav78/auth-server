@@ -11,6 +11,7 @@ export async function up(knex: Knex): Promise<void> {
 
     table.text("username")
       .unique()
+      .index()
       .notNullable();
 
     table.text("password")
