@@ -7,6 +7,8 @@ import RootResolver from "./graphql/resolver";
 
 import { customAuthChecker } from "./middlewares/auth";
 
+import router from "./routes/auth.routes";
+
 
 const port = process.env.PORT || 4000;
 
@@ -14,6 +16,8 @@ export const init = async () => {
   const app = express();
 
   import("./db/db");
+
+  app.use(router);
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
