@@ -25,23 +25,28 @@ export class AuthResolver {
     username,
     password
   }: RegisterInput): Promise<ResponseToken> {
-    const res = controllers.auth.RegisterWithUsernameAndPassword({username, password});
+    const res = controllers.auth.RegisterWithUsernameAndPassword({ username, password });
     return res;
   }
 
   @Query(() => Boolean)
-  async IsAuthenticated(@Ctx() {req}: Context): Promise<boolean> {
+  async IsAuthenticated(@Ctx() { req }: Context): Promise<boolean> {
     const token = getAuthToken(req);
-    if(!token) return false;
-    const res = controllers.auth.isAuthenticated(token);
-    return res;
+    if (!token) return false;
+    try {
+      const res = await controllers.auth.isAuthenticated(token);
+      return res;
+    }
+    catch (err) {
+      return false;
+    }
   }
 
   @Authorized()
   @Mutation(() => Boolean)
   async ChangePassword(
-    @Args(() => ChangePasswordInput) {newPassword, oldPassword}: ChangePasswordInput,
-    @Ctx() {req} : Context
+    @Args(() => ChangePasswordInput) { newPassword, oldPassword }: ChangePasswordInput,
+    @Ctx() { req }: Context
   ): Promise<boolean> {
     await controllers.auth.changePassword(req.auth!, oldPassword, newPassword)
     return true;

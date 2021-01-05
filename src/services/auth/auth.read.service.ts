@@ -9,11 +9,8 @@ import {Auth} from "../../graphql/schema";
 // helper functions
 import { validateFetchUser } from "../../lib/helpers/error";
 
-// import logger from "../../core/logger";
-
 export const authenticateUserWithUsernameAndPassword = async (username: string, password: string): Promise<Auth> => {
   try {
-    // logger.info("authenticateUserWithUsernameAndPassword: Fetching user information from database...");
     const user: Auth | undefined = await AuthModel
       .query()
       .findOne({username})
@@ -32,7 +29,6 @@ export const authenticateUserWithUsernameAndPassword = async (username: string, 
   }
   catch (err) {
     throw err;
-    // throw handleDBError(err);
   }
 }
 

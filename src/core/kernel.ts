@@ -16,9 +16,9 @@ export const bootMater = async () => {
 }
 
 export const preBootMaster = async () => {
-
+  // write the code here which need to execute first 
 }
 
 export const postBootMaster = async () => {
-
+  // Write the code here which need to be executed after after kernel
 }
