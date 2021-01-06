@@ -6,11 +6,14 @@ import {AuthModel} from "../../db/models";
 
 import {Auth} from "../../graphql/schema";
 
+import {logger} from "../../core";
+
 // helper functions
 import { validateFetchUser } from "../../lib/helpers/error";
 
 export const authenticateUserWithUsernameAndPassword = async (username: string, password: string): Promise<Auth> => {
   try {
+    logger.info("authenticateUserWithUsernameAndPassword: Fetching user information from database...");
     const user: Auth | undefined = await AuthModel
       .query()
       .findOne({username})
@@ -34,7 +37,7 @@ export const authenticateUserWithUsernameAndPassword = async (username: string, 
 
 export const findUserWithUsername = async (username: string): Promise<Auth> => {
   try {
-    // logger.info("findUserWithUsername: Fetching user information from database...");
+    logger.info("findUserWithUsername: Fetching user information from database...");
     const user: Auth | undefined = await AuthModel
       .query()
       .findOne({username})
@@ -49,13 +52,12 @@ export const findUserWithUsername = async (username: string): Promise<Auth> => {
   }
   catch (err) {
     throw err;
-    // throw handleDBError(err);
   }
 }
 
 export const findUserWithUID = async (uid: string): Promise<Auth> => {
   try {
-    // logger.info("findUserWithUID: Fetching user information from database...");
+    logger.info("findUserWithUID: Fetching user information from database...");
     const user: Auth | undefined = await AuthModel
       .query()
       .findById(uid)
@@ -70,6 +72,5 @@ export const findUserWithUID = async (uid: string): Promise<Auth> => {
   }
   catch (err) {
     throw err;
-    // throw handleDBError(err);
   }
 }

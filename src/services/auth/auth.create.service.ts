@@ -1,9 +1,13 @@
 // Models
 import {AuthModel} from "../../db/models";
 
+import {logger} from "../../core";
+
 // @types
-import { RegisterWithEmailAndPasswordService } from "../../types/auth";
-import { AuthDatabaseSchema } from "../../types";
+import { 
+  RegisterWithEmailAndPasswordService, 
+  AuthDatabaseSchema 
+} from "../../types/auth";
 
 import { generateHash } from "../../lib/helpers/security";
 
@@ -15,6 +19,7 @@ export const createUserWithUsernameAndPassword = async ({
   const hash = await generateHash(password);
   const authData: AuthDatabaseSchema = {uid, username, password: hash};
   try {
+    logger.info("createUserWithUsernameAndPassword: Creating User...");
     await AuthModel.query().insert(authData);
   }
   catch(err) {

@@ -1,7 +1,6 @@
 import express, { Request, Response, NextFunction } from "express";
 
 import { auth } from "../controllers";
-import { getAuthToken } from "../lib/helpers/security";
 import { CustomRequest } from "../types";
 
 const router = express.Router();
@@ -28,12 +27,9 @@ router.post("/signup", async (req: Request, res: Response, next: NextFunction) =
   res.status(200).json(resToken);
 });
 
-router.get("/isauthenticated", async (req: Request, res: Response, next: NextFunction) => {
-  const token = getAuthToken(req);
-  if (!token) {
-    return res.status(403).json({ error: "unauthorized", code: 403 });
-  }
-  res.status(200).json(await auth.isAuthenticated(token));
+router.get("/isauthenticated", async (req: CustomRequest, res: Response, next: NextFunction) => {
+  const isAuthenticated = !!req.isAuth;
+  res.status(200).json({isAuthenticated});
 });
 
 router.post("/changepassword", async (req: CustomRequest, res: Response, next: NextFunction) => {

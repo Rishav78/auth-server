@@ -10,7 +10,7 @@ import {
   TokenPayload, 
   AuthUpdateObject, 
   RegisterWithEmailAndPassword 
-} from "../types/auth";
+} from "../types";
 
 export const SignInWithUsernameAndPassword = async (
   username: string,
