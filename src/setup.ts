@@ -22,6 +22,7 @@ export const init = async () => {
 
   logger.info("Initilizing Middlewares...");
   app.use(express.json());
+  app.use(express.urlencoded({extended: true}));
   app.use(defaultAuthCheck());
 
   logger.info("Initilizing Routes...");

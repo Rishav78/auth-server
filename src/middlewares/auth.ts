@@ -37,3 +37,13 @@ export const customAuthChecker: AuthChecker<Context> = async ({context: {req}}) 
     return false;
   }
 }
+
+export const privateRoute = () => {
+  return async (req: CustomRequest, res: Response, next: NextFunction) => {
+    const {isAuth} = req;
+    if (!isAuth) {
+      return res.status(403).json({ error: "unauthorized", code: 403 });
+    }
+    return next();
+  }
+}
