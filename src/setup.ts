@@ -20,6 +20,8 @@ export const init = async () => {
   import("./db/db");
   logger.info("Connection established");
 
+  logger.info("Initilizing Middlewares...");
+  app.use(express.json());
   app.use(defaultAuthCheck());
 
   logger.info("Initilizing Routes...");
