@@ -26,9 +26,6 @@ export const init = async () => {
   app.use(express.urlencoded({extended: true}));
   app.use(defaultAuthCheck());
 
-  logger.info("Initilizing Routes...");
-  app.use(router);
-
   logger.info("Initilizing Apollo Server...");
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
@@ -41,6 +38,9 @@ export const init = async () => {
   });
 
   apolloServer.applyMiddleware({ app, cors: true });
+
+  logger.info("Initilizing Routes...");
+  app.use(router);
 
   /**
    * wrong route handler

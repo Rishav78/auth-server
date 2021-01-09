@@ -25,17 +25,7 @@ export const defaultAuthCheck = () => {
 }
 
 export const customAuthChecker: AuthChecker<Context> = async ({context: {req}}) => {
-  const Authorization: string | null = getAuthToken(req);
-  try {
-    const auth = await isAuth(Authorization);
-    req.isAuth = true;
-    req.auth = auth;
-    return true;
-  }
-  catch (error) {
-    req.isAuth = false;
-    return false;
-  }
+  return !!req.isAuth;
 }
 
 export const privateRoute = () => {

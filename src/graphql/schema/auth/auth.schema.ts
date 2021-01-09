@@ -8,7 +8,7 @@ export class Auth {
   @Field(() => String)
   username: string;
 
-  @Field(() => String)
+  @Field(() => String, {nullable: true})
   password?: string;
 
   @Field(() => Boolean)

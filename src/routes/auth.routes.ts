@@ -43,6 +43,12 @@ router.get("/isauthenticated", async (req: CustomRequest, res: Response, next: N
   res.status(200).json({ IsAuthenticated });
 });
 
+router.get("/currentuser",
+  privateRoute(),
+  async (req: CustomRequest, res: Response, next: NextFunction) => {
+    return res.json(req.auth!);
+});
+
 router.post("/changepassword", 
   privateRoute(),
   async (req: CustomRequest, res: Response, next: NextFunction) => {

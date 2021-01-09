@@ -6,7 +6,7 @@ import { Context } from "../../../types/auth";
 import * as controllers from "../../../controllers";
 
 // @types
-import { RegisterInput, ChangePasswordInput, ResponseToken } from "../../schema";
+import { RegisterInput, ChangePasswordInput, ResponseToken, Auth } from "../../schema";
 import { getAuthToken } from "../../../lib/helpers/security";
 
 @Resolver()
@@ -40,6 +40,12 @@ export class AuthResolver {
     catch (err) {
       return false;
     }
+  }
+
+  @Authorized()
+  @Query(() => Auth)
+  async CurrentUser(@Ctx() {req}: Context): Promise<Auth> {
+    return req.auth!;
   }
 
   @Authorized()
