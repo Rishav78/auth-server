@@ -39,8 +39,8 @@ router.post("/signup", async (req: Request, res: Response, next: NextFunction) =
 });
 
 router.get("/isauthenticated", async (req: CustomRequest, res: Response, next: NextFunction) => {
-  const isAuthenticated = !!req.isAuth;
-  res.status(200).json({ isAuthenticated });
+  const IsAuthenticated = !!req.isAuth;
+  res.status(200).json({ IsAuthenticated });
 });
 
 router.post("/changepassword", 

@@ -6,6 +6,7 @@ import { buildSchema } from "type-graphql";
 import RootResolver from "./graphql/resolver";
 
 import { customAuthChecker, defaultAuthCheck } from "./middlewares/auth";
+import { error404 } from "./middlewares/errorHandler";
 
 import router from "./routes/auth.routes";
 
@@ -40,6 +41,11 @@ export const init = async () => {
   });
 
   apolloServer.applyMiddleware({ app, cors: true });
+
+  /**
+   * wrong route handler
+   */
+  app.use(error404());
 
   app.listen(port, () => {
     logger.info(`🚀 Server ready at http://localhost:${port}`);
