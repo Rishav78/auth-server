@@ -4,6 +4,8 @@ A server that can be use as alternative for authenticate user.
 
 For env configuration please check the .env.example file.
 
+### <a target="_blank" rel="noopener noreferrer" href="https://base-authentication.herokuapp.com/graphq">https://base-authentication.herokuapp.com/graphql</a>
+
 ## Migrations
 
 To run the migration move to src directory and run `knex migrate:latest`. It'll run all the migrations and create the tables in database.
