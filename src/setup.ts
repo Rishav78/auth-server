@@ -5,7 +5,7 @@ import { buildSchema } from "type-graphql";
 
 import RootResolver from "./graphql/resolver";
 
-import { customAuthChecker, defaultAuthCheck } from "./lib/middlewares/auth";
+import { customAuthChecker } from "./lib/middlewares/auth";
 import { error404 } from "./lib/middlewares/errorHandler";
 
 import router from "./routes";
@@ -24,7 +24,6 @@ export const init = async () => {
   logger.info("Initilizing Middlewares...");
   app.use(express.json());
   app.use(express.urlencoded({extended: true}));
-  app.use(defaultAuthCheck());
 
   logger.info("Initilizing Apollo Server...");
   const apolloServer = new ApolloServer({

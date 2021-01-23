@@ -1,39 +1,45 @@
 import { AuthChecker } from "type-graphql";
-import { Response, NextFunction} from "express";
+import { Response, NextFunction } from "express";
+import { HTTP403Error } from "../utils/httpError";
 
-import { Context, CustomRequest } from "../../types";
+import {
+  Context,
+  CustomRequest,
+  MiddlewareFunction
+} from "../../types";
 
-import {getAuthToken, isAuth} from "../helpers/security";
+import { isAuth } from "../helpers/security";
+import { logger } from "../../core";
+import { handleError } from "../helpers";
+import codes from "../constants/httpCodes";
+import { getResponseHandler } from "../utils";
 
-export const defaultAuthCheck = () => {
-  return async (req: CustomRequest, res: Response, next: NextFunction) => {
-    const token: string | null = getAuthToken(req);
-    try {
-      if(!token) {
-        throw new Error("not authorized");
-      }
-      const auth = await isAuth(token);
-      req.isAuth = true;
-      req.auth = auth;
-      next(null);
-    }
-    catch (error) {
-      req.isAuth = false;
-      next();
-    }
+export const customAuthChecker: AuthChecker<Context> = async ({ context: { req } }) => {
+  try {
+    await isAuth(req);
+    return true;
+  }
+  catch (error) {
+    logger.error(error);
+    return false;
   }
 }
 
-export const customAuthChecker: AuthChecker<Context> = async ({context: {req}}) => {
-  return !!req.isAuth;
-}
-
-export const privateRoute = () => {
+export const privateRoute = (): MiddlewareFunction => {
   return async (req: CustomRequest, res: Response, next: NextFunction) => {
-    const {isAuth} = req;
-    if (!isAuth) {
-      return res.status(403).json({ error: "unauthorized", code: 403 });
+    try {
+      await isAuth(req);
+      return next();
     }
-    return next();
+    catch (error) {
+      let err = handleError(error);
+      if (err.code === codes.NotFound) {
+        err = new HTTP403Error("please provide your details before accessing the services");
+      }
+      return getResponseHandler()
+        .reqRes(req, res)
+        .setError(err)
+        .send();
+    }
   }
 }

@@ -2,7 +2,6 @@ import objection, { Model } from "objection";
 import {v4 as uuidv4} from "uuid";
 
 import {tables} from "../../lib/constants/db.constant";
-import { AuthDatabase } from "../../lib/db";
 import { generateHash } from "../../lib/helpers/security";
 
 export class AuthModel extends Model {

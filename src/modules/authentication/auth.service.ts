@@ -1,9 +1,6 @@
-import { AuthenticationError } from "apollo-server-express";
-import bcrypt from "bcrypt";
 import { logger } from "../../core";
 import { AuthModel } from "./auth.model";
 import { AuthSchema } from "../../graphql/schema";
-import { AuthDatabase, UpdateAuthDatabase } from "../../lib/db";
 import { BaseService } from "../../lib/utils/base";
 
 class AuthService extends BaseService {

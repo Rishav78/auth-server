@@ -5,7 +5,6 @@ import bcrypt from "bcrypt";
 import { CustomRequest, TokenPayload } from "../../types";
 import { AuthSchema } from "../../graphql/schema";
 
-import { AuthDatabase } from "../db";
 import { getAuthService } from "../../modules/authentication/auth.service";
 import { AuthModel } from "../../modules/authentication/auth.model";
  
@@ -34,7 +33,8 @@ export const getAuthToken = (req: Request | CustomRequest): string | null => {
   return token;
 }
 
-export const isAuth = async (token: string | null | undefined): Promise<AuthSchema> => {
+export const isAuth = async (req: CustomRequest | string): Promise<AuthSchema> => {
+  const token = typeof req === "string" ? req : getAuthToken(req);
   if(!token) {
     throw new Error("not authorized!");
   }
@@ -50,6 +50,9 @@ export const isAuth = async (token: string | null | undefined): Promise<AuthSche
     const auth = await getAuthService()
       .findUserWithUsername(username);
 
+    if(typeof req !== "string") {
+      req.auth = auth;
+    }
     return auth;
   }
   catch (error) {

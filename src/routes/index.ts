@@ -1,13 +1,11 @@
-import {Router} from "express";
+import express from "express";
+import { ParentRoute, Router } from "../lib/utils";
+import v1 from "./v1";
 
-import userRouter from "./auth.routes";
+const router = express.Router();
 
-const router = Router();
+const routes = [v1];
 
-router.use(userRouter);
-
-router.get("/ping", (req, res) => {
-  res.status(200).json({code: 200, message: "server is live"});
-});
+router.use(Router(new ParentRoute("/api", routes)));
 
 export default router;
