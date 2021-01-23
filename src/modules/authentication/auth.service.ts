@@ -8,18 +8,18 @@ import { BaseService } from "../../lib/utils/base";
 
 class AuthService extends BaseService {
 
-  public findAuthWithUsername = async (username: string): Promise<AuthSchema> => {
+  public findAuthWithUsername = async (username: string): Promise<AuthModel> => {
     try {
       logger.info("authenticateUserWithUsernameAndPassword: Fetching user information from database...");
       const user = await AuthModel
         .query()
         .findOne({ username })
-        .modify("authExport") as any;
+        .modify("authExport");
 
-      if (!user || user.isDeleted) {
+      if (!user || user.is_deleted) {
         throw new Error("user does not exist");
       }
-      if (!user.active) {
+      if (!user.is_active) {
         throw new Error(`user have been deactivated`);
       }      
       return user;
@@ -83,7 +83,7 @@ class AuthService extends BaseService {
     }
   }
 
-  updateAuthInformation = async (id: string, updateObj: UpdateAuthDatabase): Promise<boolean> => {
+  updateAuthInformation = async (id: string, updateObj: AuthModel): Promise<boolean> => {
     const {username, password} = updateObj;
     await AuthModel.query()
       .findById(id)

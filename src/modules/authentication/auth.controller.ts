@@ -1,9 +1,9 @@
 import { AuthenticationError } from "apollo-server-express";
 import bcrypt from "bcrypt";
 import { RegisterInput, ResponseToken, AuthSchema } from "../../graphql/schema";
-import { UpdateAuthDatabase } from "../../lib/db";
 import { generateToken, isAuth } from "../../lib/helpers/security";
 import { BaseController } from "../../lib/utils/base";
+import { getAuthValidator } from "./auth.helper";
 import { AuthModel } from "./auth.model";
 import { getAuthService } from "./auth.service";
 
@@ -26,7 +26,8 @@ class AuthController extends BaseController {
   registerWithUsername = async ({username, password}: RegisterInput): Promise<ResponseToken> => {
     try {
       const user = await new AuthModel().setData(username, password);
-      await getAuthService().createUserWithUsername(user);
+      getAuthValidator(user).all();
+      await getAuthService().createUserWithUsername(await user.hash());
       const token = generateToken(user);
       return token;
     }
@@ -38,13 +39,14 @@ class AuthController extends BaseController {
   changePassword = async (auth: AuthSchema, oldPassword: string, newPassword: string) => {
     const {username, uid} = auth;
     const service = getAuthService();
-    const updateObj = await new UpdateAuthDatabase(await service.findAuthWithUsername(username))
-      .updatePassword(oldPassword, newPassword);
-    
-    await (await updateObj.hash()).validate();
+    const currentAuth = await service.findAuthWithUsername(username);
+    const updatedAuth = await new AuthModel().setPassword(newPassword);
+
+    await getAuthValidator(updatedAuth, currentAuth)
+      .password(oldPassword);
 
     await service
-      .updateAuthInformation(uid, updateObj);
+      .updateAuthInformation(uid, updatedAuth);
       
     return true;
   }

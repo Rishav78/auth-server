@@ -24,9 +24,27 @@ export class AuthModel extends Model {
     this.updated_at = new Date();
   }
 
-  setData = async (username: string, password: string) => {
+  setData = (username: string, password: string) => {
+    this.setUsername(username)
+    this.setPassword(password)
+    return this;
+  }
+
+  setPassword = (password: string) => {
+    this.password = password;
+    return this;
+  }
+
+  setUsername = (username: string) => {
     this.username = username;
-    this.password = await generateHash(password);
+    return this;
+  }
+
+  hash = async () => {
+    if(!this.password) {
+      throw new Error("password not provided");
+    }
+    this.password = await generateHash(this.password);
     return this;
   }
 
