@@ -8,7 +8,7 @@ import RootResolver from "./graphql/resolver";
 import { customAuthChecker, defaultAuthCheck } from "./middlewares/auth";
 import { error404 } from "./middlewares/errorHandler";
 
-import router from "./routes/auth.routes";
+import router from "./routes";
 
 import {logger} from "./core";
 
