@@ -8,35 +8,35 @@ import {
 @ObjectType()
 export class ResponseToken {
   @Field(() => String) 
-  token: string;
+  token!: string;
 
   @Field(() => String) 
-  timestamp: string;
+  timestamp!: string;
 };
 
 @InputType()
 export class SigninInputs {
   @Field(() => String) 
-  username: string;
+  username!: string;
 
   @Field(() => String) 
-  password: string;
+  password!: string;
 };
 
 @ArgsType()
 export class RegisterInput {
   @Field(() => String) 
-  username: string;
+  username!: string;
 
   @Field(() => String) 
-  password: string;
+  password!: string;
 };
 
 @ArgsType()
 export class ChangePasswordInput {
   @Field(() => String, {nullable: false})
-  oldPassword: string;
+  oldPassword!: string;
 
   @Field(() => String, {nullable: false})
-  newPassword: string;
+  newPassword!: string;
 }

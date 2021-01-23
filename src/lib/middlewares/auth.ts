@@ -1,9 +1,9 @@
 import { AuthChecker } from "type-graphql";
 import { Response, NextFunction} from "express";
 
-import { Context, CustomRequest } from "../types";
+import { Context, CustomRequest } from "../../types";
 
-import {getAuthToken, isAuth} from "../lib/helpers/security";
+import {getAuthToken, isAuth} from "../helpers/security";
 
 export const defaultAuthCheck = () => {
   return async (req: CustomRequest, res: Response, next: NextFunction) => {

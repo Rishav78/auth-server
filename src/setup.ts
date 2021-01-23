@@ -5,8 +5,8 @@ import { buildSchema } from "type-graphql";
 
 import RootResolver from "./graphql/resolver";
 
-import { customAuthChecker, defaultAuthCheck } from "./middlewares/auth";
-import { error404 } from "./middlewares/errorHandler";
+import { customAuthChecker, defaultAuthCheck } from "./lib/middlewares/auth";
+import { error404 } from "./lib/middlewares/errorHandler";
 
 import router from "./routes";
 

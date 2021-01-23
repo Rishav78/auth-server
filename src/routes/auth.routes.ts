@@ -1,7 +1,6 @@
 import express, { Request, Response, NextFunction } from "express";
-
-import { auth } from "../controllers";
-import { privateRoute } from "../middlewares/auth";
+import { privateRoute } from "../lib/middlewares/auth";
+import { getAuthController } from "../modules/authentication/auth.controller";
 import { CustomRequest } from "../types";
 
 const router = express.Router();
@@ -19,7 +18,8 @@ interface ChangePassword {
 router.post("/signin", async (req: Request, res: Response, next: NextFunction) => {
   const { username, password }: Auth = req.body;
   try {
-    const resToken = await auth.SignInWithUsernameAndPassword(username, password);
+    const resToken = await getAuthController()
+      .signinWithUsername(username, password);
     res.status(200).json(resToken);
   }
   catch (err) {
@@ -30,7 +30,8 @@ router.post("/signin", async (req: Request, res: Response, next: NextFunction) =
 router.post("/signup", async (req: Request, res: Response, next: NextFunction) => {
   const { username, password }: Auth = req.body;
   try {
-    const resToken = await auth.RegisterWithUsernameAndPassword({ username, password });
+    const resToken = await getAuthController()
+      .registerWithUsername({ username, password });
     return res.status(200).json(resToken);
   }
   catch (err) {
@@ -57,7 +58,8 @@ router.post("/changepassword",
   }
   const { newPassword, oldPassword }: ChangePassword = req.body;
   try {
-    await auth.changePassword(req.auth!, oldPassword, newPassword);
+    await getAuthController()
+      .changePassword(req.auth!, oldPassword, newPassword);
     return res.status(200).json({ status: 200, message: "password changed!" });
   }
   catch (err) {

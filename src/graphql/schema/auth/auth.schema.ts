@@ -1,25 +1,25 @@
 import { Field, ObjectType } from "type-graphql";
 
 @ObjectType()
-export class Auth {
-  @Field(() => String)
-  uid: string;
+export class AuthSchema {
+  @Field(() => String, {nullable: false})
+  uid!: string;
 
-  @Field(() => String)
-  username: string;
+  @Field(() => String, {nullable: false})
+  username!: string;
 
   @Field(() => String, {nullable: true})
   password?: string;
 
-  @Field(() => Boolean)
-  isDeleted: boolean;
+  @Field(() => Boolean, {nullable: false})
+  isDeleted!: boolean;
 
-  @Field(() => Boolean, { defaultValue: true })
-  active: boolean;
+  @Field(() => Boolean, {nullable: false})
+  active!: boolean;
 
-  @Field(() => Date)
-  createdAt: Date;
+  @Field(() => Date, {nullable: false})
+  createdAt!: Date;
 
-  @Field(() => Date)
-  updatedAt: Date;
+  @Field(() => Date, {nullable: false})
+  updatedAt!: Date;
 }

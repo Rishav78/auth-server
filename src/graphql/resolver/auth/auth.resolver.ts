@@ -1,13 +1,22 @@
-import { Resolver, Query, Arg, Mutation, Args, Ctx, Authorized } from "type-graphql";
-
-// modules
+import { 
+  Resolver, 
+  Query, 
+  Arg, 
+  Mutation, 
+  Args, 
+  Ctx, 
+  Authorized 
+} from "type-graphql";
+import { 
+  RegisterInput, 
+  ChangePasswordInput, 
+  ResponseToken, 
+  AuthSchema 
+} from "../../schema";
+import { getAuthToken } from "../../../lib/helpers/security";
+import { getAuthController } from "../../../modules/authentication/auth.controller";
 import { Context } from "../../../types/auth";
 
-import * as controllers from "../../../controllers";
-
-// @types
-import { RegisterInput, ChangePasswordInput, ResponseToken, Auth } from "../../schema";
-import { getAuthToken } from "../../../lib/helpers/security";
 
 @Resolver()
 export class AuthResolver {
@@ -16,7 +25,8 @@ export class AuthResolver {
     @Arg("username", () => String) username: string,
     @Arg("password", () => String) password: string
   ): Promise<ResponseToken> {
-    const res = controllers.auth.SignInWithUsernameAndPassword(username, password);
+    const res = await getAuthController()
+      .signinWithUsername(username, password);
     return res;
   }
 
@@ -25,7 +35,8 @@ export class AuthResolver {
     username,
     password
   }: RegisterInput): Promise<ResponseToken> {
-    const res = controllers.auth.RegisterWithUsernameAndPassword({ username, password });
+    const res = getAuthController().
+      registerWithUsername({ username, password });
     return res;
   }
 
@@ -34,7 +45,8 @@ export class AuthResolver {
     const token = getAuthToken(req);
     if (!token) return false;
     try {
-      const res = await controllers.auth.isAuthenticated(token);
+      const res = await getAuthController()
+        .isAuthenticated(token);
       return res;
     }
     catch (err) {
@@ -43,8 +55,8 @@ export class AuthResolver {
   }
 
   @Authorized()
-  @Query(() => Auth)
-  async CurrentUser(@Ctx() {req}: Context): Promise<Auth> {
+  @Query(() => AuthSchema)
+  async CurrentUser(@Ctx() { req }: Context): Promise<AuthSchema> {
     return req.auth!;
   }
 
@@ -54,7 +66,8 @@ export class AuthResolver {
     @Args(() => ChangePasswordInput) { newPassword, oldPassword }: ChangePasswordInput,
     @Ctx() { req }: Context
   ): Promise<boolean> {
-    await controllers.auth.changePassword(req.auth!, oldPassword, newPassword)
+    await getAuthController()
+      .changePassword(req.auth!, oldPassword, newPassword)
     return true;
   }
 }
