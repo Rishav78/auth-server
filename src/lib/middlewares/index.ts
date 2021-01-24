@@ -1,5 +1,5 @@
 import { ErrorHandlingMiddleware, MiddlewareFunction } from "../../types";
-import codes from "../constants/httpCodes";
+import {codes} from "../constants";
 import { getResponseHandler } from "../utils";
 
 export * from "./auth";

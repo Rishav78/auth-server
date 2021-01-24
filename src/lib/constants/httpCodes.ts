@@ -1,4 +1,4 @@
-const codes = {
+export const codes = {
   OK: 200,
   Created: 201,
   Accepted: 202,
@@ -13,5 +13,3 @@ const codes = {
   NotAcceptable: 406,
   Conflict: 409
 };
-
-export default codes;

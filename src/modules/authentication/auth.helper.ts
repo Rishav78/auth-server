@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { emailRegex, passwordRegex } from "../../lib/constants/regex";
+import { emailRegex, passwordRegex } from "../../lib/constants";
 import { HTTP400Error, HTTP500Error } from "../../lib/utils/httpError";
 import { AuthModel } from "./auth.model";
 

@@ -11,7 +11,7 @@ import {
 import { isAuth } from "../helpers/security";
 import { logger } from "../../core";
 import { handleError } from "../helpers";
-import codes from "../constants/httpCodes";
+import {codes} from "../constants";
 import { getResponseHandler } from "../utils";
 
 export const customAuthChecker: AuthChecker<Context> = async ({ context: { req } }) => {
