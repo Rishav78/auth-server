@@ -12,9 +12,8 @@ import router from "./routes";
 
 import {logger} from "./core";
 
-const port = process.env.PORT || 4000;
-
 export const init = async () => {
+  const port = process.env.PORT || 4000;
   const app = express();
 
   logger.info("Connecting to database...");
@@ -32,7 +31,10 @@ export const init = async () => {
       validate: false,
       authChecker: customAuthChecker,
     }),
-    debug: true,
+    logger,
+    debug: process.env.NODE_ENV === "development",
+    playground: true,
+    introspection: true,
     context: ({ req, res }) => ({ req, res }),
   });
 
@@ -44,13 +46,11 @@ export const init = async () => {
   /**
    * error handler router
    */
-
   app.use(handleError());
 
   /**
    * invalid route handler
    */
-  
   app.use(HTTP404Error());
 
   app.listen(port, () => {
