@@ -1,20 +1,26 @@
 import { ErrorHandlingMiddleware, MiddlewareFunction } from "../../types";
+import codes from "../constants/httpCodes";
+import { getResponseHandler } from "../utils";
 
 export * from "./auth";
 
 export const HTTP404Error = (): MiddlewareFunction => {
   return async (req, res, next) => {
-    return res.status(404)
-      .json({code: 404, error: "route does not exist"});
+    return getResponseHandler()
+      .reqRes(req, res)
+      .setStatus(codes.NotFound)
+      .send({ error: "route does not exist" })
   }
 }
 
 export const handleError = (): ErrorHandlingMiddleware => {
   return async (error, req, res, next) => {
-    if(error) {
-      const {code, message} = error;
-      return res.status(code)
-        .json({ error: message, code });
+    if (error) {
+      const { code, message } = error;
+      return getResponseHandler()
+        .reqRes(req, res)
+        .setStatus(code)
+        .send({ error: message })
     }
     return next();
   }
