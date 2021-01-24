@@ -2,6 +2,8 @@ import { logger } from "../../core";
 import { AuthModel } from "./auth.model";
 import { AuthSchema } from "../../graphql/schema";
 import { BaseService } from "../../lib/utils/base";
+import { HTTP403Error, HTTP404Error } from "../../lib/utils/httpError";
+import { handleError } from "../../lib/helpers";
 
 class AuthService extends BaseService {
 
@@ -14,15 +16,15 @@ class AuthService extends BaseService {
         .modify("authExport");
 
       if (!user || user.is_deleted) {
-        throw new Error("user does not exist");
+        throw new HTTP404Error("user does not exist");
       }
       if (!user.is_active) {
-        throw new Error(`user have been deactivated`);
-      }      
+        throw new HTTP403Error(`user have been deactivated`);
+      }
       return user;
     }
-    catch (err) {
-      throw err;
+    catch (error) {
+      throw handleError(error);
     }
   }
 
@@ -35,15 +37,15 @@ class AuthService extends BaseService {
         .modify("defaultExport") as any;
 
       if (!user || user.isDeleted) {
-        throw new Error("user does not exist");
+        throw new HTTP404Error("user does not exist");
       }
       if (!user.active) {
-        throw new Error(`user have been deactivated`);
+        throw new HTTP403Error(`user have been deactivated`);
       }
       return user!;
     }
-    catch (err) {
-      throw err;
+    catch (error) {
+      throw handleError(error);
     }
   }
 
@@ -56,16 +58,16 @@ class AuthService extends BaseService {
         .modify("defaultExport") as any;
 
       if (!user || user.isDeleted) {
-        throw new Error("user does not exist");
+        throw new HTTP404Error("user does not exist");
       }
       if (!user.active) {
-        throw new Error(`user have been deactivated`);
+        throw new HTTP403Error(`user have been deactivated`);
       }
 
       return user!;
     }
-    catch (err) {
-      throw err;
+    catch (error) {
+      throw handleError(error);
     }
   }
 
@@ -75,17 +77,22 @@ class AuthService extends BaseService {
       await AuthModel.query().insert(user);
       return true;
     }
-    catch (err) {
-      throw err;
+    catch (error) {
+      throw handleError(error);
     }
   }
 
   updateAuthInformation = async (id: string, updateObj: AuthModel): Promise<boolean> => {
-    const {username, password} = updateObj;
-    await AuthModel.query()
-      .findById(id)
-      .patch({username, password});
-    return true;
+    const { username, password } = updateObj;
+    try {
+      await AuthModel.query()
+        .findById(id)
+        .patch({ username, password });
+      return true;
+    }
+    catch (error) {
+      throw handleError(error);
+    }
   }
 }
 

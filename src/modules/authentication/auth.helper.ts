@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import { emailRegex, passwordRegex } from "../../lib/constants/regex";
+import { HTTP400Error, HTTP500Error } from "../../lib/utils/httpError";
 import { AuthModel } from "./auth.model";
 
 export class AuthValidator {
@@ -25,20 +26,20 @@ export class AuthValidator {
   isnull = () => {
     const { username, password } = this.auth;
     if (username === null) {
-      throw new Error("username can not be null");
+      throw new HTTP400Error("username can not be null");
     }
     if (password === null) {
-      throw new Error("password can not be null");
+      throw new HTTP400Error("password can not be null");
     }
   }
 
   username = () => {
     const { username } = this.auth;
     if (username === undefined) {
-      throw new Error("username not provided");
+      throw new HTTP400Error("username not provided");
     }
     if (!emailRegex.test(username)) {
-      throw new Error("invalid username");
+      throw new HTTP400Error("invalid username");
     }
     return this;
   }
@@ -46,18 +47,18 @@ export class AuthValidator {
   password = async (oldpassword?: string) => {
     const { password } = this.auth;
     if (password === undefined) {
-      throw new Error("password not provided");
+      throw new HTTP400Error("password not provided");
     }
     if (oldpassword) {
       if (!this.prevAuth) {
-        throw new Error("provide current data for validation");
+        throw new HTTP500Error("provide current data for validation");
       }
       if (!(await bcrypt.compare(oldpassword, this.prevAuth.password!))) {
-        throw new Error("password is incorrect");
+        throw new HTTP400Error("password is incorrect");
       }
     }
     if (!passwordRegex.test(password)) {
-      throw new Error("invalid password");
+      throw new HTTP400Error("invalid password");
     }
     return this;
   }

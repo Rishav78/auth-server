@@ -6,7 +6,7 @@ import { buildSchema } from "type-graphql";
 import RootResolver from "./graphql/resolver";
 
 import { customAuthChecker } from "./lib/middlewares/auth";
-import { error404 } from "./lib/middlewares/errorHandler";
+import { handleError, HTTP404Error } from "./lib/middlewares";
 
 import router from "./routes";
 
@@ -42,9 +42,16 @@ export const init = async () => {
   app.use(router);
 
   /**
-   * wrong route handler
+   * error handler router
    */
-  app.use(error404());
+
+  app.use(handleError());
+
+  /**
+   * invalid route handler
+   */
+  
+  app.use(HTTP404Error());
 
   app.listen(port, () => {
     logger.info(`🚀 Server ready at http://localhost:${port}`);

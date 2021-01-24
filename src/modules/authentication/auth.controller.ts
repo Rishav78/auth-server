@@ -1,6 +1,7 @@
 import { AuthenticationError } from "apollo-server-express";
 import bcrypt from "bcrypt";
 import { RegisterInput, ResponseToken, AuthSchema } from "../../graphql/schema";
+import { handleError } from "../../lib/helpers";
 import { generateToken, isAuth } from "../../lib/helpers/security";
 import { BaseController } from "../../lib/utils/base";
 import { getAuthValidator } from "./auth.helper";
@@ -18,12 +19,12 @@ class AuthController extends BaseController {
       const token = generateToken(user);
       return token;
     }
-    catch (err) {
-      throw err;
+    catch (error) {
+      throw handleError(error);
     }
   }
 
-  registerWithUsername = async ({username, password}: RegisterInput): Promise<ResponseToken> => {
+  registerWithUsername = async ({ username, password }: RegisterInput): Promise<ResponseToken> => {
     try {
       const user = await new AuthModel().setData(username, password);
       getAuthValidator(user).all();
@@ -31,24 +32,29 @@ class AuthController extends BaseController {
       const token = generateToken(user);
       return token;
     }
-    catch (err) {
-      throw err;
+    catch (error) {
+      throw handleError(error);
     }
   }
 
   changePassword = async (auth: AuthSchema, oldPassword: string, newPassword: string) => {
-    const {username, uid} = auth;
+    const { username, uid } = auth;
     const service = getAuthService();
-    const currentAuth = await service.findAuthWithUsername(username);
-    const updatedAuth = await new AuthModel().setPassword(newPassword);
+    try {
+      const currentAuth = await service.findAuthWithUsername(username);
+      const updatedAuth = await new AuthModel().setPassword(newPassword);
 
-    await getAuthValidator(updatedAuth, currentAuth)
-      .password(oldPassword);
+      await getAuthValidator(updatedAuth, currentAuth)
+        .password(oldPassword);
 
-    await service
-      .updateAuthInformation(uid, updatedAuth);
-      
-    return true;
+      await service
+        .updateAuthInformation(uid, updatedAuth);
+
+      return true;
+    }
+    catch (error) {
+      throw handleError(error);
+    }
   }
 
   isAuthenticated = async (token: string): Promise<boolean> => {
@@ -56,8 +62,8 @@ class AuthController extends BaseController {
       const authenticated = await isAuth(token);
       return authenticated ? true : false;
     }
-    catch (err) {
-      throw err;
+    catch (error) {
+      throw handleError(error);
     }
   }
 }

@@ -1,7 +1,6 @@
 import { ErrorHandlingMiddleware, MiddlewareFunction } from "../../types";
 
 export * from "./auth";
-export * from "./errorHandler";
 
 export const HTTP404Error = (): MiddlewareFunction => {
   return async (req, res, next) => {
