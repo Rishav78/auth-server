@@ -1,5 +1,5 @@
 import {Request} from "express";
-import {Auth} from "../graphql/schema";
+import {AuthSchema} from "../graphql/schema";
 
 export interface AuthDatabaseSchema {
   uid: string;
@@ -12,7 +12,7 @@ export interface AuthDatabaseSchema {
 }
 
 export type CustomRequest = Request & {
-  auth?: Auth,
+  auth?: AuthSchema,
   isAuth?: boolean
 }
 

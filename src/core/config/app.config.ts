@@ -5,5 +5,5 @@ export const rootDir = path.resolve(__dirname, "..", "..", "..");
 
 export const configuration: AppConfig = {
   env: "development",
-  salt: 10
+  saltRound: 10
 };

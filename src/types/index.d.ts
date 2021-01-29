@@ -5,7 +5,7 @@ type Env = "development" | "production";
 
 export interface AppConfig {
   env: Env;
-  salt: number
+  saltRound: number
 }
 
 export interface LoggerConfig {
