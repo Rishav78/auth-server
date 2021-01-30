@@ -14,8 +14,6 @@ export class AuthModel extends Model {
   created_at?: Date;
   updated_at?: Date;
 
-
-
   static get tableName() {
     return tables.auth;
   }
@@ -72,14 +70,13 @@ export class AuthModel extends Model {
   }
 
   public toAuthSchema = (): AuthSchema => {
-    return {
-      uid: this.uid!,
-      username: this.password!,
-      password: this.password,
-      active: this.is_active!,
-      isDeleted: this.is_deleted!,
-      createdAt: this.created_at!,
-      updatedAt: this.updated_at!,
-    };
+    const auth = new AuthSchema();
+    return auth
+      .setUid(this.uid!)
+      .setUsername(this.username!)
+      .setPassword(this.password)
+      .setActive(this.is_active!)
+      .setIsDeleted(this.is_deleted!)
+      .setTimestamp(this.created_at!, this.updated_at!);
   }
 }

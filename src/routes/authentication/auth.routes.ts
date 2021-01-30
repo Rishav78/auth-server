@@ -1,5 +1,5 @@
 import { NextFunction, Response } from "express";
-import { RegisterInput, SigninInputs, ChangePasswordInput, AuthSchema } from "../../graphql/schema";
+import { RegisterInput, SigninInputs, ChangePasswordInput } from "../../graphql/schema";
 import { codes } from "../../lib/constants";
 import { handleError, TokenManager } from "../../lib/helpers";
 import { getResponseHandler } from "../../lib/utils";

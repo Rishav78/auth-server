@@ -22,4 +22,35 @@ export class AuthSchema {
 
   @Field(() => Date, {nullable: false})
   updatedAt!: Date;
+
+  public setUid = (uid: string) => {
+    this.uid = uid;
+    return this;
+  }
+
+  public setUsername = (username: string) => {
+    this.username = username;
+    return this;
+  }
+
+  public setPassword = (password?: string) => {
+    this.password = password;
+    return this;
+  }
+
+  public setIsDeleted = (isDeleted: boolean) => {
+    this.isDeleted = isDeleted;
+    return this;
+  }
+
+  public setActive = (active: boolean) => {
+    this.active = active;
+    return this;
+  }
+
+  public setTimestamp = (createdAt: Date, updatedAt: Date) => {
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
+    return this;
+  }
 }
