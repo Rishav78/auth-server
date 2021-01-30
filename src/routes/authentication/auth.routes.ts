@@ -1,10 +1,10 @@
 import { NextFunction, Response } from "express";
-import { RegisterInput, SigninInputs, ChangePasswordInput } from "../../graphql/schema";
-import {codes} from "../../lib/constants";
-import { handleError } from "../../lib/helpers";
+import { RegisterInput, SigninInputs, ChangePasswordInput, AuthSchema } from "../../graphql/schema";
+import { codes } from "../../lib/constants";
+import { handleError, TokenManager } from "../../lib/helpers";
 import { getResponseHandler } from "../../lib/utils";
 import { getAuthController } from "../../modules/authentication/auth.controller";
-import { CustomRequest } from "../../types";
+import { CustomRequest, MiddlewareFunction } from "../../types";
 
 class AuthRoute {
   signin = async (req: CustomRequest, res: Response, next: NextFunction) => {
@@ -36,6 +36,22 @@ class AuthRoute {
     }
     catch (error) {
       next(handleError(error))
+    }
+  }
+
+  refreshToken: MiddlewareFunction = async (req, res, next) => {
+    const Jwt = new TokenManager();
+    try {
+      const authToken = Jwt.getAuthToken(req);
+      const refreshToken = Jwt.getRefreshToken(req);
+      const token = await getAuthController().refreshToken(authToken, refreshToken);
+      return getResponseHandler()
+        .reqRes(req, res)
+        .setStatus(codes.OK)
+        .send({token});
+    }
+    catch (error) {
+      return next(handleError(error));
     }
   }
 

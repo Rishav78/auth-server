@@ -1,3 +1,4 @@
 export const tables = {
-  auth: "auth"
+  auth: "auth",
+  secret: "token_secret",
 };

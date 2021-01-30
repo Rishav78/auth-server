@@ -1,11 +1,11 @@
 import objection, { Model } from "objection";
 import {v4 as uuidv4} from "uuid";
+import { AuthSchema } from "../../graphql/schema";
 
 import {tables} from "../../lib/constants";
 import { generateHash } from "../../lib/helpers/security";
 
 export class AuthModel extends Model {
-
   uid?: string;
   username?: string;
   password?: string;
@@ -14,38 +14,7 @@ export class AuthModel extends Model {
   created_at?: Date;
   updated_at?: Date;
 
-  constructor() {
-    super();
-    this.uid = uuidv4();
-    this.is_active = true;
-    this.is_deleted = false;
-    this.created_at = new Date();
-    this.updated_at = new Date();
-  }
 
-  setData = (username: string, password: string) => {
-    this.setUsername(username)
-    this.setPassword(password)
-    return this;
-  }
-
-  setPassword = (password: string) => {
-    this.password = password;
-    return this;
-  }
-
-  setUsername = (username: string) => {
-    this.username = username;
-    return this;
-  }
-
-  hash = async () => {
-    if(!this.password) {
-      throw new Error("password not provided");
-    }
-    this.password = await generateHash(this.password);
-    return this;
-  }
 
   static get tableName() {
     return tables.auth;
@@ -72,4 +41,45 @@ export class AuthModel extends Model {
       .select("password");
     }
   };
+
+  public newInstance = (username: string, password: string) => {
+    this.uid = uuidv4();
+    this.is_active = true;
+    this.is_deleted = false;
+    this.created_at = new Date();
+    this.updated_at = new Date();
+    this.setUsername(username)
+    this.setPassword(password)
+    return this;
+  }
+
+  public setPassword = (password: string) => {
+    this.password = password;
+    return this;
+  }
+
+  public setUsername = (username: string) => {
+    this.username = username;
+    return this;
+  }
+
+  public hash = async () => {
+    if(!this.password) {
+      throw new Error("password not provided");
+    }
+    this.password = await generateHash(this.password);
+    return this;
+  }
+
+  public toAuthSchema = (): AuthSchema => {
+    return {
+      uid: this.uid!,
+      username: this.password!,
+      password: this.password,
+      active: this.is_active!,
+      isDeleted: this.is_deleted!,
+      createdAt: this.created_at!,
+      updatedAt: this.updated_at!,
+    };
+  }
 }

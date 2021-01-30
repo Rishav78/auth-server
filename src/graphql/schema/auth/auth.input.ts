@@ -11,6 +11,9 @@ export class ResponseToken {
   token!: string;
 
   @Field(() => String) 
+  refreshToken!: string;
+
+  @Field(() => String) 
   timestamp!: string;
 };
 

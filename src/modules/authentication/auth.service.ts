@@ -5,30 +5,31 @@ import { BaseService } from "../../lib/utils/base";
 import { HTTP403Error, HTTP404Error } from "../../lib/utils/httpError";
 import { handleError } from "../../lib/helpers";
 
-class AuthService extends BaseService {
 
-  public findAuthWithUsername = async (username: string): Promise<AuthModel> => {
+
+class AuthService extends BaseService {
+  public findAuthWithUsername = async (username: string): Promise<AuthSchema> => {
     try {
       logger.info("authenticateUserWithUsernameAndPassword: Fetching user information from database...");
-      const user = await AuthModel
+      const auth: AuthSchema = await AuthModel
         .query()
         .findOne({ username })
-        .modify("authExport");
+        .modify("authExport") as any;
 
-      if (!user || user.is_deleted) {
+      if (!auth || auth.isDeleted) {
         throw new HTTP404Error("user does not exist");
       }
-      if (!user.is_active) {
+      if (!auth.active) {
         throw new HTTP403Error(`user have been deactivated`);
       }
-      return user;
+      return auth;
     }
     catch (error) {
       throw handleError(error);
     }
   }
 
-  findUserWithUID = async (uid: string): Promise<AuthSchema> => {
+  public findUserWithUID = async (uid: string): Promise<AuthSchema> => {
     try {
       logger.info("findUserWithUID: Fetching user information from database...");
       const user: AuthSchema | undefined = await AuthModel
@@ -49,7 +50,7 @@ class AuthService extends BaseService {
     }
   }
 
-  findUserWithUsername = async (username: string): Promise<AuthSchema> => {
+  public findUserWithUsername = async (username: string): Promise<AuthSchema> => {
     try {
       logger.info("findUserWithUsername: Fetching user information from database...");
       const user: AuthSchema | undefined = await AuthModel
@@ -71,7 +72,7 @@ class AuthService extends BaseService {
     }
   }
 
-  createUserWithUsername = async (user: AuthModel): Promise<boolean> => {
+  public createUserWithUsername = async (user: AuthModel): Promise<boolean> => {
     try {
       logger.info("createUserWithUsername: Creating User...");
       await AuthModel.query().insert(user);
@@ -82,7 +83,7 @@ class AuthService extends BaseService {
     }
   }
 
-  updateAuthInformation = async (id: string, updateObj: AuthModel): Promise<boolean> => {
+  public updateAuthInformation = async (id: string, updateObj: AuthModel): Promise<boolean> => {
     const { username, password } = updateObj;
     try {
       await AuthModel.query()

@@ -13,7 +13,7 @@ import {
   ResponseToken, 
   AuthSchema 
 } from "../../schema";
-import { getAuthToken } from "../../../lib/helpers/security";
+import { TokenManager } from "../../../lib/helpers";
 import { getAuthController } from "../../../modules/authentication/auth.controller";
 import { Context } from "../../../types/auth";
 
@@ -42,7 +42,7 @@ export class AuthResolver {
 
   @Query(() => Boolean)
   async IsAuthenticated(@Ctx() { req }: Context): Promise<boolean> {
-    const token = getAuthToken(req);
+    const token = await new TokenManager().getAuthToken(req);
     if (!token) return false;
     try {
       const res = await getAuthController()

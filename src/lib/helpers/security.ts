@@ -1,45 +1,24 @@
-import {Request} from "express";
-import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
-import { CustomRequest, TokenPayload } from "../../types";
+import { CustomRequest } from "../../types";
 import { AuthSchema } from "../../graphql/schema";
 
 import { getAuthService } from "../../modules/authentication/auth.service";
-import { AuthModel } from "../../modules/authentication/auth.model";
- 
-export const generateToken = (user: AuthModel | AuthSchema) => {
-  if(!user) {
-    throw new Error('user information not provided');
-  }
-  const {username, uid} = user; 
-  const token = jwt.sign({username, uid}, "secretkey");
-  return {
-    token,
-    timestamp: new Date().getTime().toString() // graphql does not support int greater then 32 bit
-  };
-};
+import { TokenManager } from "./token";
+import { getSecretController } from "../../modules/secret/secret.controller";
 
 export const generateHash = async (text: string, round: number = 10) => {
   return bcrypt.hash(text, await bcrypt.genSalt(round));
 }
 
-export const getAuthToken = (req: Request | CustomRequest): string | null => {
-  const Authorization: string | undefined = req.get("Authorization");
-  if(!Authorization) {
-    return null;
-  }
-  const [barrer, token] = Authorization.split(" ");
-  return token;
-}
-
 export const isAuth = async (req: CustomRequest | string): Promise<AuthSchema> => {
-  const token = typeof req === "string" ? req : getAuthToken(req);
-  if(!token) {
+  const jwtToken = new TokenManager();
+  const token1 = typeof req === "string" ? req : jwtToken.getAuthToken(req);
+  if(!token1) {
     throw new Error("not authorized!");
   }
   try {
-    const payload: TokenPayload = jwt.verify(token, "secretkey") as TokenPayload;
+    const payload = await jwtToken.decodeAuthToken(token1);
 
     if(!payload) {
       throw new Error("not authorized");
