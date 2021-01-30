@@ -8,13 +8,19 @@ import {
 @ObjectType()
 export class ResponseToken {
   @Field(() => String) 
-  token!: string;
+  token: string;
 
   @Field(() => String) 
-  refreshToken!: string;
+  refreshToken: string;
 
   @Field(() => String) 
-  timestamp!: string;
+  timestamp: string;
+
+  constructor(token: string, refreshToken: string) {
+    this.token = token;
+    this.refreshToken = refreshToken;
+    this.timestamp = new Date().getTime().toString(); // graphql does not support int greater then 32 bit
+  }
 };
 
 @InputType()

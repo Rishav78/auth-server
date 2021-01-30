@@ -21,7 +21,7 @@ import { Context } from "../../../types/auth";
 @Resolver()
 export class AuthResolver {
   @Query(() => ResponseToken, { nullable: true })
-  async SignInWithUsernameAndPassword(
+  async SignInWithUsername(
     @Arg("username", () => String) username: string,
     @Arg("password", () => String) password: string
   ): Promise<ResponseToken> {
@@ -31,7 +31,7 @@ export class AuthResolver {
   }
 
   @Mutation(() => ResponseToken)
-  async RegisterWithUsernameAndPassword(@Args(() => RegisterInput) {
+  async RegisterWithUsername(@Args(() => RegisterInput) {
     username,
     password
   }: RegisterInput): Promise<ResponseToken> {

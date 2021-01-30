@@ -75,9 +75,9 @@ export class AuthController extends BaseController {
     }
   }
 
-  refreshToken = async (authToken: string | null, refreshToken: string | null): Promise<string> => {
+  refreshToken = async (authToken: string | null, refreshToken: string | null): Promise<ResponseToken> => {
     if (refreshToken === null || authToken === null) {
-      throw new HTTP404Error("refresh token not provided");
+      throw new HTTP404Error("refresh or auth token not provided");
     }
     const {id} = await this.Jwt.decodeAuthLevel2Token(authToken);
     const secret = await getSecretController().getSecretById(id);

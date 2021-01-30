@@ -48,7 +48,7 @@ class AuthRoute {
       return getResponseHandler()
         .reqRes(req, res)
         .setStatus(codes.OK)
-        .send({token});
+        .send(token);
     }
     catch (error) {
       return next(handleError(error));

@@ -25,12 +25,22 @@ export interface RefreshPayload {
 export class TokenManager {
   secret?: Secret;
 
+  /**
+   * @param secret
+   * set the secret 
+   */
   public setSecret = (secret: Secret) => {
     this.secret = secret;
     return this;
   }
 
-  // base functions
+  /**
+   * 
+   * @param token string
+   * @param secret string
+   * @returns payload T
+   * @description A wrapper for decode the given token using given secret
+   */
   private verifyToken = async <T>(token: string, secret: string): Promise<T> => {
     const decoded = await new Promise<T>((resolve, reject) => {
       Jwt.verify(token, secret, (error, payload) => {
@@ -43,6 +53,14 @@ export class TokenManager {
     return decoded;
   }
 
+  /**
+   * 
+   * @param secret string
+   * @param payload T
+   * @param options Jwt.SignOptions
+   * @returns token of type string
+   * @description A wrapper for generating token with given payload and secret.
+   */
   private generateToken = async <T = any>(secret: string, payload: T | any, options: Jwt.SignOptions = {}) => {
     const token = await new Promise<string>((resolve, reject) => {
       Jwt.sign(payload, secret, options, (error, token) => {
@@ -55,7 +73,12 @@ export class TokenManager {
     return token;
   }
 
-  // auth token generator functions
+  /**
+   * 
+   * @param payload AuthLevel1Payload
+   * @returns authToken string
+   * @description generate auth level1 token with provided secret
+   */
   private generateAuthLevel1Token = async (payload: AuthLevel1Payload): Promise<string> => {
     if (!this.secret) {
       throw new HTTP500Error("AuthLevel1Token secret not provided");
@@ -65,6 +88,13 @@ export class TokenManager {
     return token;
   }
 
+  /**
+   * 
+   * @param payload AuthLevel2Payload
+   * @returns authToken string
+   * @description generate auth level2 token with provided payload.
+   * Pick the secret from env variable
+   */
   private generateAuthLevel2Token = async (payload: AuthLevel2Payload): Promise<string> => {
     const secret = process.env.AUTH_TOKEN_SECRET;
     if (!secret) {
@@ -105,11 +135,7 @@ export class TokenManager {
     const { uid, username, createdAt, updatedAt } = auth;
     token = await this.generateAuthToken({ uid: uid!, username: username! });
     refreshToken = await this.generateRefreshToken({ uid, username, createdAt, updatedAt });
-    return {
-      token,
-      refreshToken,
-      timestamp: new Date().getTime().toString() // graphql does not support int greater then 32 bit
-    };
+    return new ResponseToken(token, refreshToken);
   }
 
   public decodeAuthLevel1Token = async (token: string) => {
@@ -147,14 +173,14 @@ export class TokenManager {
     return payload;
   }
 
-  public refreshAuthToken = async (refreshToken: string) => {
+  public refreshAuthToken = async (refreshToken: string): Promise<ResponseToken> => {
     const refreshPayload = await this.decodeRefreshToken(refreshToken);
     if (!refreshPayload) {
       throw new HTTP404Error();
     }
     const { uid, username } = refreshPayload;
     const token = await this.generateAuthToken({ uid, username });
-    return token;
+    return new ResponseToken(token, refreshToken);
   }
 
   public getAuthToken = (req: CustomRequest): null | string => {
@@ -167,7 +193,7 @@ export class TokenManager {
   }
 
   public getRefreshToken = (req: CustomRequest): null | string => {
-    const token: string | undefined = req.get("Authorization");
+    const token: string | undefined = req.get("x-refresh-token");
     if (!token) {
       return null;
     }
