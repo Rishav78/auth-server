@@ -7,6 +7,7 @@
     "type-check": "tsc --noEmit",
     "type-check:watch": "npm run type-check -- --watch",
     "start": "pm2 start pm2.yml ",
+    "herokuPM2": "pm2-runtime start ecosystem.config.js --env production",
     "build:types": "tsc --emitDeclarationOnly",
     "dev": "nodemon ./src/index.ts",
     "build": "tsc",
