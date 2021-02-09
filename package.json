@@ -37,6 +37,7 @@
     "knex": "^0.21.15",
     "objection": "^2.2.4",
     "pg": "^8.5.1",
+    "pm2": "^4.5.4",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^1.1.1",
     "uuid": "^8.3.2",
