@@ -61,7 +61,7 @@ export class ResponseHandler {
       this.res.status(code)
         .json({ 
           code,
-          error,
+          data: {error},
           // stack:  configuration.env === "development" ? 
           //   stack : null,
         });

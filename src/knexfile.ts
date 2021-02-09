@@ -5,7 +5,7 @@ const knexConfig =  {
 
   development: {    
     client: "pg",
-    connection: "postgres://localhost/authentication",
+    connection: "postgres://localhost/laundry",
     migrations: {
       directory: path.resolve(__dirname, "db", "migrations")
     },
@@ -31,18 +31,13 @@ const knexConfig =  {
   },
 
   production: {
-    client: "postgresql",
-    connection: {
-      database: "my_db",
-      user: "username",
-      password: "password"
-    },
-    pool: {
-      min: 2,
-      max: 10
-    },
+    client: "pg",
+    connection: process.env.DATABASE_URL,
     migrations: {
-      tableName: "knex_migrations"
+      directory: path.resolve(__dirname, "db", "migrations")
+    },
+    seeds: {
+      directory: path.resolve(__dirname, "db", "seeds")
     }
   }
 };
